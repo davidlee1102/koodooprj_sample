@@ -5,4 +5,7 @@ koodoovoice/voice_data_merged
 koodoovoice/voice_data_test
 koodoovoice/model_packages/summary_model
 koodoovoice/model_packages/tokenizer_summary_model
+pretrained_models/
+wav2vec2_checkpoints/
+3249fe98bfc62fcbc26067f724716a6ec49d12c4728a2af1df659013905dff21
 constant_key.py
