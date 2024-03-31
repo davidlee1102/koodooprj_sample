@@ -1,3 +1,8 @@
 dataset_temp/
-file_lib/
+koodoovoice/file_lib
+koodoovoice/voice_data
+koodoovoice/voice_data_merged
+koodoovoice/voice_data_test
+koodoovoice/model_packages/summary_model
+koodoovoice/model_packages/tokenizer_summary_model
 constant_key.py

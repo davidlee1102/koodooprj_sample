@@ -2,12 +2,16 @@ import os
 import spacy
 import torch
 import shutil
+import time
 import speech_recognition as sr
+import transformers
+import numpy as np
 
 from pydub import AudioSegment
 from pyannote.audio import Pipeline
 
 from koodoovoice.model_packages import constant_key
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 
 def check_disclaimer(representative_transcript):
@@ -67,7 +71,8 @@ def diarization_convert(file_path, num_speaker=2):
     pipeline = Pipeline.from_pretrained(
         "pyannote/speaker-diarization-3.1",
         use_auth_token=constant_key.HF_KEY)
-    diarization = pipeline("/content/Call-1-Example", num_speakers=2)
+    print("oke, process")
+    diarization = pipeline(file_path, num_speakers=2)
     return diarization
 
 
@@ -107,3 +112,65 @@ def extract_and_transcribe_segments(audio_file, diarization, output_dir="segment
         # print(f"{speech_turn.start:4.5f} - {speech_turn.end:4.5f} {speaker}: {transcription}")
 
     return transcriptions_by_speaker, dialogue_details
+
+
+def merge_and_play_speaker_segments(transcriptions_by_speaker, speaker_id, output_dir="koodoovoice/voice_data_merged"):
+    """
+    Merges all audio segments for a given speaker ID and plays the merged audio in Google Colab.
+
+    Args:
+        transcriptions_by_speaker (dict): Dictionary containing aggregated transcriptions and audio segments for each speaker.
+        speaker_id (str): The ID of the speaker whose segments are to be merged and played.
+        output_dir (str): Directory where the merged audio segment will be saved.
+    """
+    if speaker_id not in transcriptions_by_speaker:
+        print(f"No segments found for {speaker_id}")
+        return
+
+    # Concatenate all segments for the specified speaker
+    merged_segment = AudioSegment.silent(duration=0)  # Start with a silent segment to concatenate to
+    for segment in transcriptions_by_speaker[speaker_id]['segments']:
+        merged_segment += segment
+
+    # Ensure the output directory exists
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    # Save the merged segment to a file
+    merged_filename = os.path.join(output_dir, f"{speaker_id}_merged.wav")
+    merged_segment.export(merged_filename, format="wav")
+
+
+tokenizer = AutoTokenizer.from_pretrained(constant_key.TOKENIZER_PATH)
+model = AutoModelForSeq2SeqLM.from_pretrained(constant_key.MODEL_PATH)
+torch.mps.set_per_process_memory_fraction(0.0)
+
+
+def model_loader(conversation_summary):
+    collator = transformers.DataCollatorForSeq2Seq(tokenizer, model=model)
+    args = transformers.Seq2SeqTrainingArguments(
+        'conversation-summ',
+        evaluation_strategy='epoch',
+        learning_rate=2e-5,
+        per_device_train_batch_size=2,
+        per_device_eval_batch_size=2,
+        gradient_accumulation_steps=2,
+        weight_decay=0.01,
+        save_total_limit=2,
+        num_train_epochs=3,
+        predict_with_generate=True,
+        eval_accumulation_steps=1,
+        fp16=False,
+        use_mps_device=True,
+    )
+
+    trainer = transformers.Seq2SeqTrainer(
+        model,
+        args,
+        data_collator=collator,
+        tokenizer=tokenizer,
+    )
+    model_inputs = tokenizer(conversation_summary, max_length=512, padding='max_length', truncation=True)
+    raw_pred, _, _ = trainer.predict([model_inputs])
+    result = tokenizer.decode(raw_pred[0], skip_special_tokens=True)
+    return str(result)

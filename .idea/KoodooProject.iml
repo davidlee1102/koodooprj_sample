@@ -15,6 +15,7 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/koodoovoice/dataset_temp" />
+      <excludeFolder url="file://$MODULE_DIR$/koodoovoice/voice_data_merged" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

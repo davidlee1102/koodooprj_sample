@@ -3,22 +3,28 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.request import Request
 
-from koodoovoice.ultils import response_message_process
+from koodoovoice.ultils import response_message_process, logs_record
 from koodoovoice.model_packages import voice_models
+
 
 @api_view(["POST"])
 def disclaimer_verification(request: Request):
     """Example
        {
-           "coversation_process": "Your conversation need to check"
-       }
-       """
+            "file_path": "koodoovoice/voice_data/Call-1-Example"
+        }
+        """
     data = request.data
-    conversation_request = data.get("coversation_process", "")
-    if not conversation_request:
+    file_path_request = data.get("file_path", "")
+    if not file_path_request:
         return Response(response_message_process.status_response('Error Input - Please Check Again'),
                         status=status.HTTP_400_BAD_REQUEST)
     else:
+        diarization = voice_models.diarization_convert(file_path_request, num_speaker=2)
+        transcriptions_by_speaker, dialogue_details = voice_models.extract_and_transcribe_segments(file_path_request,
+                                                                                                   diarization)
+        conversation_request = transcriptions_by_speaker['SPEAKER_00'].get("transcription", "")
+        print(conversation_request)
         result = voice_models.check_disclaimer(str(conversation_request))
         return Response(result, status=status.HTTP_200_OK)
 
@@ -48,9 +54,9 @@ def covert_voice_to_wav(request: Request):
 def dialogue_convert(request: Request):
     """Example
        {
-           "file_path": "Your wav file path"
-       }
-       """
+            "file_path": "koodoovoice/voice_data/Call-1-Example"
+        }
+        """
     data = request.data
     file_path_request = data.get("file_path", "")
     if not file_path_request:
@@ -58,4 +64,9 @@ def dialogue_convert(request: Request):
                         status=status.HTTP_400_BAD_REQUEST)
     else:
         diarization = voice_models.diarization_convert(file_path_request, num_speaker=2)
-        return Response(diarization, status=status.HTTP_200_OK)
+        transcriptions_by_speaker, dialogue_details = voice_models.extract_and_transcribe_segments(file_path_request,
+                                                                                                   diarization)
+        voice_models.merge_and_play_speaker_segments(transcriptions_by_speaker, "SPEAKER_01")
+        logs_record.dataframe_records('transcription', transcriptions_by_speaker, 'processed')
+        print("ok")
+        return Response("OK", status=status.HTTP_200_OK)
