@@ -22,7 +22,7 @@ This repository provide the implementation of Koodoo Project Sample and our resu
 ### How to install
 
 ```bash
-git clone https://github.com/davidlee1102/Surtimesurvival.git
+git clone https://github.com/davidlee1102/koodooprj_sample.git
 ```
 
 ### Setup environment
