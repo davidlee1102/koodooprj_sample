@@ -66,7 +66,50 @@ def dialogue_convert(request: Request):
         diarization = voice_models.diarization_convert(file_path_request, num_speaker=2)
         transcriptions_by_speaker, dialogue_details = voice_models.extract_and_transcribe_segments(file_path_request,
                                                                                                    diarization)
-        voice_models.merge_and_play_speaker_segments(transcriptions_by_speaker, "SPEAKER_01")
         logs_record.dataframe_records('transcription', transcriptions_by_speaker, 'processed')
         print("ok")
         return Response("OK", status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+def conversation_summary(request: Request):
+    """Example
+       {
+            "file_path": "koodoovoice/voice_data/Call-1-Example"
+        }
+        """
+    data = request.data
+    file_path_request = data.get("file_path", "")
+    if not file_path_request:
+        return Response(response_message_process.status_response('Error Input - Please Check Again'),
+                        status=status.HTTP_400_BAD_REQUEST)
+    else:
+        diarization = voice_models.diarization_convert(file_path_request, num_speaker=2)
+        _, dialogue_details = voice_models.extract_and_transcribe_segments(file_path_request, diarization)
+        result = voice_models.model_loader(dialogue_details)
+        logs_record.dataframe_records('summary', result, 'processed')
+        return Response(result, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+def emotion_user_checking(request: Request):
+    """Example
+       {
+            "file_path": "koodoovoice/voice_data/Call-1-Example"
+        }
+        """
+    data = request.data
+    file_path_request = data.get("file_path", "")
+    if not file_path_request:
+        return Response(response_message_process.status_response('Error Input - Please Check Again'),
+                        status=status.HTTP_400_BAD_REQUEST)
+    else:
+        diarization = voice_models.diarization_convert(file_path_request, num_speaker=2)
+        transcriptions_by_speaker, dialogue_details = voice_models.extract_and_transcribe_segments(file_path_request,
+                                                                                                   diarization)
+        file_path = voice_models.merge_and_play_speaker_segments(transcriptions_by_speaker, "SPEAKER_01")
+        result, emotion = voice_models.voice_emotion_classify(file_path, transcriptions_by_speaker)
+        data_str_add = emotion + result
+        logs_record.dataframe_records('emotion_checking', data_str_add, 'processed')
+        print(emotion, result)
+        return Response(data_str_add, status=status.HTTP_200_OK)

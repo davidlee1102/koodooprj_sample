@@ -21,7 +21,5 @@ def summary_test(request: Request):
                         status=status.HTTP_400_BAD_REQUEST)
     else:
         result = voice_models.model_loader(conversation_request)
-        print(result)
         logs_record.dataframe_records('summary', result, 'processed')
-
         return Response("OK", status=status.HTTP_200_OK)

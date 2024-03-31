@@ -6,5 +6,6 @@ urlpatterns = [
     path('disclaim_check/', voice_request.disclaimer_verification),
     path('voice_convert/', voice_request.covert_voice_to_wav),
     path('dialogue_convert/', voice_request.dialogue_convert),
-    path('summary_test/', test_request.summary_test),
+    path('conversation_summary/', voice_request.conversation_summary),
+    path('emotion_check/', voice_request.emotion_user_checking),
 ]

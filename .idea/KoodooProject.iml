@@ -16,6 +16,8 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/koodoovoice/dataset_temp" />
       <excludeFolder url="file://$MODULE_DIR$/koodoovoice/voice_data_merged" />
+      <excludeFolder url="file://$MODULE_DIR$/koodoovoice/model_packages/summary_model" />
+      <excludeFolder url="file://$MODULE_DIR$/koodoovoice/model_packages/tokenizer_summary_model" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
