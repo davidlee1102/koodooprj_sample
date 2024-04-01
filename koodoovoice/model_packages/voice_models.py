@@ -3,13 +3,12 @@ import spacy
 import torch
 import shutil
 import time
+import numpy as np
 import speech_recognition as sr
 import transformers
-import numpy as np
 
 from pydub import AudioSegment
 from pyannote.audio import Pipeline
-
 from koodoovoice.model_packages import constant_key
 from speechbrain.inference.interfaces import foreign_class
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
@@ -77,7 +76,7 @@ def diarization_convert(file_path, num_speaker=2):
         "pyannote/speaker-diarization-3.1",
         use_auth_token=constant_key.HF_KEY)
     print("oke, process")
-    diarization = pipeline(file_path, num_speakers=2)
+    diarization = pipeline(file_path, num_speakers=num_speaker)
     return diarization
 
 
@@ -186,7 +185,7 @@ def text_processing_summary(dialogue_details):
     for i in range(len(dialogue_details)):
         speaker_id = dialogue_details[i].get("speaker")
         transcription = dialogue_details[i].get("transcription")
-        conversation = conversation + speaker_id + ":" + transcription
+        conversation = conversation + speaker_id + ":" + transcription + " "
     return conversation
 
 
@@ -197,9 +196,9 @@ classifier = foreign_class(source="speechbrain/emotion-recognition-wav2vec2-IEMO
 def voice_emotion_classify(file_path, transcriptions_by_speaker):
     out_prob, score, index, text_lab = classifier.classify_file(file_path)
     result = ""
-    if text_lab == 'hap':
+    if text_lab[0] == 'hap':
         return result, 'positive'
-    elif text_lab == 'neu':
+    elif text_lab[0] == 'neu':
         return result, 'neutral'
     else:
         user_conversation = '.'.join(transcriptions_by_speaker['SPEAKER_01'].get("transcription", "").split(".")[:2])
