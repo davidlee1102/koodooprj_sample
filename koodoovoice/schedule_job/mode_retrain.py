@@ -9,6 +9,12 @@ from koodoovoice.model_packages import constant_key
 from datasets import load_dataset, load_metric, load_from_disk
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
+
+import constant_key
+from datasets import load_dataset, load_metric, load_from_disk
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+
+#koodoovoice.model_packages import constant_key
 nltk.download('punkt')
 
 max_input = 512
@@ -141,3 +147,4 @@ if __name__ == "__main__":
     # trainer_class = trainer_create()
     # trainer_class.train()
     # trainer_class.save_model("summary_model")
+    # trainer_class.save_model("koodoovoice/model_packages/summary_model")
