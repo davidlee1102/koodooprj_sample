@@ -12,3 +12,4 @@ wav2vec2_checkpoints/
 constant_key.py
 *.wav
 *.bin
+koodoovoice/model_packages/constant_key.py
