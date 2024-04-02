@@ -12,4 +12,5 @@ urlpatterns = [
     path('test_conversation_summary/', test_request.summary_test),
     path('register/', authenticate_request.RegisterView.as_view()),
     path('login/', authenticate_request.LoginView.as_view()),
+    path('human_feedback/', voice_request.compare_models),
 ]

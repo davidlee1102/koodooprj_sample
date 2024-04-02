@@ -18,7 +18,7 @@ def dataframe_records(request, result, status):
         data_frame = pd.DataFrame(dict_temp)
         data_frame.to_csv(data_path, index=False)
     else:
-        data_frame = pd.read_csv(data_path)
+        data_frame = pd.read_csv(data_path, index_col=0)
         data_frame = data_frame.reset_index(drop=True)
         dict_temp = {
             'time': [datetime.datetime.now()],
@@ -30,4 +30,4 @@ def dataframe_records(request, result, status):
         data_frame_temp = data_frame_temp.reset_index(drop=True)
         data_frame = pd.concat([data_frame, data_frame_temp], ignore_index=True)
         data_frame = data_frame.reset_index(drop=True)
-        data_frame.to_csv(data_path, mode='w')
+        data_frame.to_csv(data_path, mode='w', index=False)
