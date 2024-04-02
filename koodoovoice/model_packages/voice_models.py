@@ -1,6 +1,7 @@
 import os
 import spacy
 import torch
+import random
 import shutil
 import time
 import numpy as np
@@ -15,6 +16,8 @@ from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 tokenizer = AutoTokenizer.from_pretrained(constant_key.TOKENIZER_PATH)
 model = AutoModelForSeq2SeqLM.from_pretrained(constant_key.MODEL_PATH)
+model_falcon_ai = AutoModelForSeq2SeqLM.from_pretrained(constant_key.MODEL_FALCONAI_PATH)
+
 torch.mps.set_per_process_memory_fraction(0.0)
 
 
@@ -146,6 +149,13 @@ def merge_and_play_speaker_segments(transcriptions_by_speaker, speaker_id, outpu
 
 
 def model_loader(conversation_summary):
+    model_random = random.uniform(0, 1)
+    if model_random == 1:
+        print("Model Falcon AI")
+        model = model_falcon_ai
+    else:
+        model = AutoModelForSeq2SeqLM.from_pretrained(constant_key.MODEL_PATH)
+        print("Model Bart")
     collator = transformers.DataCollatorForSeq2Seq(tokenizer, model=model)
     args = transformers.Seq2SeqTrainingArguments(
         'conversation-summ',

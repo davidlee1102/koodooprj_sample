@@ -9,6 +9,7 @@ urlpatterns = [
     path('conversation_summary/', voice_request.conversation_summary),
     path('emotion_check/', voice_request.emotion_user_checking),
     path('whisper_emotion_check/', voice_request.whisper_emotion_user_checking),
+    path('test_conversation_summary/', test_request.summary_test),
     path('register/', authenticate_request.RegisterView.as_view()),
     path('login/', authenticate_request.LoginView.as_view()),
 ]

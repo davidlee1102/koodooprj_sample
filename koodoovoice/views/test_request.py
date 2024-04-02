@@ -22,4 +22,4 @@ def summary_test(request: Request):
     else:
         result = voice_models.model_loader(conversation_request)
         logs_record.dataframe_records('summary', result, 'processed')
-        return Response("OK", status=status.HTTP_200_OK)
+        return Response(result, status=status.HTTP_200_OK)

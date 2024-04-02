@@ -4,6 +4,7 @@ koodoovoice/voice_data
 koodoovoice/voice_data_merged
 koodoovoice/voice_data_test
 koodoovoice/model_packages/summary_model
+koodoovoice/model_packages/summary_model_falconAI
 koodoovoice/model_packages/tokenizer_summary_model
 pretrained_models/
 wav2vec2_checkpoints/
