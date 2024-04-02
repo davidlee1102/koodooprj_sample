@@ -68,7 +68,7 @@ def dialogue_convert(request: Request):
                                                                                                    diarization)
         logs_record.dataframe_records('transcription', transcriptions_by_speaker, 'processed')
         print("ok")
-        return Response("OK", status=status.HTTP_200_OK)
+        return Response(str(transcriptions_by_speaker), status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
@@ -109,7 +109,7 @@ def emotion_user_checking(request: Request):
                                                                                                    diarization)
         file_path = voice_models.merge_and_play_speaker_segments(transcriptions_by_speaker, "SPEAKER_01")
         result, emotion = voice_models.voice_emotion_classify(file_path, transcriptions_by_speaker)
-        data_str_add = emotion + result
+        data_str_add = emotion + " " + result
         logs_record.dataframe_records('emotion_checking', data_str_add, 'processed')
         print(emotion, result)
         return Response(data_str_add, status=status.HTTP_200_OK)
