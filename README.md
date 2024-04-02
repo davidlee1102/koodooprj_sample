@@ -59,6 +59,56 @@ cd KoodooProject
 docker-compose build
 ```
 
+----------
+## 🏃‍♂️ Running an Experiment
+
+```bash
+python manage.py runserver
+```
+
+After server is running, here is some function and the link for request:
+
+- Emotion Recognition(Using Pyannote OR Whisper)
+
+```
+http://localhost:8000/emotion_check/
+```
+
+```
+http://localhost:8000/whisper_emotion_check/
+```
+
+- Disclaimer Verification
+
+```
+http://localhost:8000/disclaim_check/
+```
+
+- Call Summary Generation(Using FalconAI OR BART)
+
+```
+http://localhost:8000/conversation_summary/
+```
+----------
+## 🔧‍ Data Backup & Re-Training & Human Feedback
+
+- We provide the pipeline for monitoring and re-training model, using PerfectCloud for managing & re-training. Take a look on `model_retrain.py` file
+
+- The data backup/ logs is saved in csv file `koo_records_logs.csv` file
+
+- The human feedback is provided by using random model for summary, the user will get it from front end.
+
+----------
+## 🛠️ Security 
+
+- We provide JSON Web Tokens (JWT) for secure the request. 
+
+## 🔮Future Plans
+
+We have ambitious plans for the future, with a focus on the following priorities:
+
+- **Scale Up:** Our aim is to provide comprehensive recipes and technologies for training massive models on extensive datasets.
+
 ..
 <h5 align="left">
 🤘 This repo is currently developing and fixing, if this repo have any problems or you have any questions/ suggestions, feel free to email us
