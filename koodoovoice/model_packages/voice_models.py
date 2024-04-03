@@ -33,7 +33,7 @@ def check_disclaimer(representative_transcript):
     conversa_2 = nlp(representative_transcript)
     similarity_score = conversa_1.similarity(conversa_2)
     print(similarity_score)
-    if similarity_score > 0.8:
+    if similarity_score > 0.7:
         result = "Disclaimer or a variation is likely present."
     else:
         result = "Disclaimer not found."
@@ -131,7 +131,7 @@ def merge_and_play_speaker_segments(transcriptions_by_speaker, speaker_id, outpu
     """
     if speaker_id not in transcriptions_by_speaker:
         print(f"No segments found for {speaker_id}")
-        return
+        return None
 
     # Concatenate all segments for the specified speaker
     merged_segment = AudioSegment.silent(duration=0)  # Start with a silent segment to concatenate to

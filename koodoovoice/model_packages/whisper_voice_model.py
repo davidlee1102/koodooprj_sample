@@ -59,8 +59,8 @@ def speech_discriminate(segments, num_speakers, file_path):
     labels = clustering.labels_
     for i in range(len(segments)):
         speaker_id = segments[i]["speaker"] = "SPEAKER_" + '0' + str(labels[i])
-        voice_start = segments[i].get("start", "")
-        voice_end = segments[i].get("end", "")
+        # voice_start = segments[i].get("start", "")
+        # voice_end = segments[i].get("end", "")
         voice_text = segments[i].get("text", "")
         if speaker_id not in transcriptions_by_speaker:
             transcriptions_by_speaker[speaker_id] = {"transcription": "", "segments": []}

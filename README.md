@@ -37,10 +37,6 @@ conda activate koodooprjsample
 
 #### OR
 
-```bash
-pip install -r requirements.txt
-```
-
 Install from requirements
 
 ```bash
