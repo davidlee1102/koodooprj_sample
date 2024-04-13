@@ -1,5 +1,6 @@
 import torch
 import wave
+import os
 import whisper
 import datetime
 import subprocess
@@ -14,6 +15,8 @@ from sklearn.cluster import AgglomerativeClustering, KMeans
 from pyannote.audio.pipelines.speaker_verification import PretrainedSpeakerEmbedding
 from koodoovoice.model_packages import constant_key
 
+
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 embedding_model = PretrainedSpeakerEmbedding(constant_key.WHISPER_EMBEDDING_PATH)
 model_name = constant_key.WHISPER_MODEL_NAME
 

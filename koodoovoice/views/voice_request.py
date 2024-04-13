@@ -22,7 +22,11 @@ def disclaimer_verification(request: Request):
         return Response(response_message_process.status_response('Error Input - Please Check Again'),
                         status=status.HTTP_400_BAD_REQUEST)
     else:
-        diarization = voice_models.diarization_convert(file_path_request, num_speaker=2)
+        try:
+            diarization = voice_models.diarization_convert(file_path_request, num_speaker=2)
+        except Exception as E:
+            print(E)
+            return Response("Function Error, Please Check Your File", status=status.HTTP_400_BAD_REQUEST)
         transcriptions_by_speaker, dialogue_details = voice_models.extract_and_transcribe_segments(file_path_request,
                                                                                                    diarization)
         conversation_request = transcriptions_by_speaker['SPEAKER_00'].get("transcription", "")
@@ -65,7 +69,11 @@ def dialogue_convert(request: Request):
         return Response(response_message_process.status_response('Error Input - Please Check Again'),
                         status=status.HTTP_400_BAD_REQUEST)
     else:
-        diarization = voice_models.diarization_convert(file_path_request, num_speaker=2)
+        try:
+            diarization = voice_models.diarization_convert(file_path_request, num_speaker=2)
+        except Exception as E:
+            print(E)
+            return Response("Function Error, Please Check Your File", status=status.HTTP_400_BAD_REQUEST)
         transcriptions_by_speaker, dialogue_details = voice_models.extract_and_transcribe_segments(file_path_request,
                                                                                                    diarization)
         logs_record.dataframe_records('transcription', transcriptions_by_speaker, 'processed')
@@ -86,7 +94,11 @@ def conversation_summary(request: Request):
         return Response(response_message_process.status_response('Error Input - Please Check Again'),
                         status=status.HTTP_400_BAD_REQUEST)
     else:
-        diarization = voice_models.diarization_convert(file_path_request, num_speaker=2)
+        try:
+            diarization = voice_models.diarization_convert(file_path_request, num_speaker=2)
+        except Exception as E:
+            print(E)
+            return Response("Function Error, Please Check Your File", status=status.HTTP_400_BAD_REQUEST)
         _, dialogue_details = voice_models.extract_and_transcribe_segments(file_path_request, diarization)
         result = voice_models.model_loader(dialogue_details)
         logs_record.dataframe_records('summary', result, 'processed')
@@ -106,7 +118,12 @@ def emotion_user_checking(request: Request):
         return Response(response_message_process.status_response('Error Input - Please Check Again'),
                         status=status.HTTP_400_BAD_REQUEST)
     else:
-        diarization = voice_models.diarization_convert(file_path_request, num_speaker=2)
+        try:
+            diarization = voice_models.diarization_convert(file_path_request, num_speaker=2)
+        except Exception as E:
+            print(E)
+            return Response("Function Error, Please Check Your File", status=status.HTTP_400_BAD_REQUEST)
+
         transcriptions_by_speaker, dialogue_details = voice_models.extract_and_transcribe_segments(file_path_request,
                                                                                                    diarization)
         file_path = voice_models.merge_and_play_speaker_segments(transcriptions_by_speaker, "SPEAKER_01")
@@ -130,7 +147,11 @@ def whisper_emotion_user_checking(request: Request):
         return Response(response_message_process.status_response('Error Input - Please Check Again'),
                         status=status.HTTP_400_BAD_REQUEST)
     else:
-        diarization = whisper_voice_model.whisper_diarization_convert(file_path_request)
+        try:
+            diarization = whisper_voice_model.whisper_diarization_convert(file_path_request)
+        except Exception as E:
+            print(E)
+            return Response("Function Error, Please Check Your File", status=status.HTTP_400_BAD_REQUEST)
         transcriptions_by_speaker, dialogue_details = whisper_voice_model.speech_discriminate(diarization, 2,
                                                                                               file_path_request)
         file_path = voice_models.merge_and_play_speaker_segments(transcriptions_by_speaker, "SPEAKER_01")

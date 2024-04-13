@@ -5,6 +5,7 @@ import random
 import shutil
 import time
 import numpy as np
+
 import speech_recognition as sr
 import transformers
 
@@ -13,6 +14,8 @@ from pyannote.audio import Pipeline
 from koodoovoice.model_packages import constant_key
 from speechbrain.inference.interfaces import foreign_class
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 tokenizer = AutoTokenizer.from_pretrained(constant_key.TOKENIZER_PATH)
 model = AutoModelForSeq2SeqLM.from_pretrained(constant_key.MODEL_PATH)
